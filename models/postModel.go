@@ -4,6 +4,9 @@ import "gorm.io/gorm"
 
 type Post struct {
 	gorm.Model
-	Title string
-	Body  string
+	CategoryID uint `gorm:"foreignkey:CategoryID"`
+	Title      string
+	Body       string `gorm:"type:text"`
+	UserID     uint   `gorm:"foreignkey:UserID"`
+	Comment    Comment
 }
