@@ -19,6 +19,10 @@ func FormatValidationErrors(errs validator.ValidationErrors) map[string]string {
 			errorMessages[err.Field()] = fmt.Sprintf("%s must have at least %s characters", err.Field(), err.Param())
 		case "max":
 			errorMessages[err.Field()] = fmt.Sprintf("%s must have at most %s characters", err.Field(), err.Param())
+		case "gt":
+			errorMessages[err.Field()] = fmt.Sprintf("%s must be greater than %s", err.Field(), err.Param())
+		case "gte":
+			errorMessages[err.Field()] = fmt.Sprintf("%s must be greater than or equal to %s", err.Field(), err.Param())
 		default:
 			errorMessages[err.Field()] = fmt.Sprintf("Validation errors on field %s", err.Field())
 		}
