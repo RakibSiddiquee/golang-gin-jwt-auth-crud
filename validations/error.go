@@ -1,4 +1,4 @@
-package errors
+package validations
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ func FormatValidationErrors(errs validator.ValidationErrors) map[string]string {
 		case "gte":
 			errorMessages[err.Field()] = fmt.Sprintf("%s must be greater than or equal to %s", err.Field(), err.Param())
 		default:
-			errorMessages[err.Field()] = fmt.Sprintf("Validation errors on field %s", err.Field())
+			errorMessages[err.Field()] = fmt.Sprintf("Validation validations on field %s", err.Field())
 		}
 	}
 
