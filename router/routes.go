@@ -13,4 +13,6 @@ func GetRoute(r *gin.Engine) {
 
 	// Category routes
 	r.GET("/categories", middleware.RequireAuth, controllers.GetCategories)
+	r.POST("/categories/create", middleware.RequireAuth, controllers.CreateCategory)
+
 }

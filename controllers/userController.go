@@ -8,7 +8,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -68,8 +67,6 @@ func Signup(c *gin.Context) {
 
 	// Create the user
 	result := initializers.DB.Create(&user)
-
-	log.Println(result.Error)
 
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

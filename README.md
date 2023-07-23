@@ -9,6 +9,7 @@
 4. Golang JWT (https://github.com/golang-jwt/jwt)
 5. Godotenv (https://github.com/joho/godotenv)
 6. Validation (https://github.com/go-playground/validator)
+7. Slug (https://github.com/gosimple/slug)
 
 ### Steps to follow
 1. Clone the repo
