@@ -7,9 +7,9 @@ import (
 
 type Category struct {
 	gorm.Model
-	Name string `gorm:"unique;not null" json:"name"`
-	Slug string `gorm:"unique;not null" json:"slug"`
-	Post []Post
+	Name  string `gorm:"unique;not null" json:"name"`
+	Slug  string `gorm:"unique;not null" json:"slug"`
+	Posts []Post
 }
 
 func (category *Category) BeforeCreate(tx *gorm.DB) (err error) {

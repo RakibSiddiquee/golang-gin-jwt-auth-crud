@@ -12,7 +12,17 @@ func GetRoute(r *gin.Engine) {
 	r.POST("/login", controllers.Login)
 
 	// Category routes
-	r.GET("/categories", middleware.RequireAuth, controllers.GetCategories)
-	r.POST("/categories/create", middleware.RequireAuth, controllers.CreateCategory)
+	catRouter := r.Group("/categories")
+	{
+		catRouter.Use(middleware.RequireAuth)
+
+		catRouter.GET("/", controllers.GetCategories)
+		catRouter.POST("/create", controllers.CreateCategory)
+		catRouter.GET("/:id", controllers.FindCategory)
+		catRouter.PUT("/:id", controllers.UpdateCategory)
+		catRouter.DELETE("/:id", controllers.DeleteCategory)
+		catRouter.GET("/all-trash", controllers.GetTrashCategories)
+		catRouter.DELETE("/delete-permanent/:id", controllers.DeleteCategoryPermanent)
+	}
 
 }
