@@ -10,6 +10,7 @@ func GetRoute(r *gin.Engine) {
 	// User routes
 	r.POST("/signup", controllers.Signup)
 	r.POST("/login", controllers.Login)
+	r.POST("/logout", controllers.Logout)
 
 	// Category routes
 	catRouter := r.Group("/categories")
@@ -24,5 +25,4 @@ func GetRoute(r *gin.Engine) {
 		catRouter.GET("/all-trash", controllers.GetTrashCategories)
 		catRouter.DELETE("/delete-permanent/:id", controllers.DeleteCategoryPermanent)
 	}
-
 }
