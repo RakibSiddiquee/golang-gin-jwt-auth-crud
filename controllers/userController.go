@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/helpers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/initializers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/models"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/validations"
@@ -38,7 +39,7 @@ func Signup(c *gin.Context) {
 	}
 
 	// Email unique validation
-	if err := initializers.DB.Where("email = ?", userInput.Email).First(&models.User{}).Error; err == nil {
+	if !helpers.IsUniqueValue(initializers.DB, "users", "email", userInput.Email) {
 		c.JSON(http.StatusConflict, gin.H{
 			"validations": map[string]interface{}{
 				"Email": "The email is already exist!",
@@ -47,6 +48,15 @@ func Signup(c *gin.Context) {
 
 		return
 	}
+	//if err := initializers.DB.Where("email = ?", userInput.Email).First(&models.User{}).Error; err == nil {
+	//	c.JSON(http.StatusConflict, gin.H{
+	//		"validations": map[string]interface{}{
+	//			"Email": "The email is already exist!",
+	//		},
+	//	})
+	//
+	//	return
+	//}
 
 	// Hash the password
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(userInput.Password), 10)

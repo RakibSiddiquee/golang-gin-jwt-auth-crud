@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/helpers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/initializers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/models"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/validations"
@@ -36,9 +37,8 @@ func CreateCategory(c *gin.Context) {
 	}
 
 	// Name unique validation
-	if err := initializers.DB.Where("name = ?", userInput.Name).
-		Or("slug = ?", slug.Make(userInput.Name)).
-		First(&models.Category{}).Error; err == nil {
+	if !helpers.IsUniqueValue(initializers.DB, "categories", "name", userInput.Name) ||
+		!helpers.IsUniqueValue(initializers.DB, "categories", "slug", slug.Make(userInput.Name)) {
 		c.JSON(http.StatusConflict, gin.H{
 			"validations": map[string]interface{}{
 				"Name": "The name is already exist!",
@@ -47,6 +47,17 @@ func CreateCategory(c *gin.Context) {
 
 		return
 	}
+	//if err := initializers.DB.Where("name = ?", userInput.Name).
+	//	Or("slug = ?", slug.Make(userInput.Name)).
+	//	First(&models.Category{}).Error; err == nil {
+	//	c.JSON(http.StatusConflict, gin.H{
+	//		"validations": map[string]interface{}{
+	//			"Name": "The name is already exist!",
+	//		},
+	//	})
+	//
+	//	return
+	//}
 
 	// Create the category
 	category := models.Category{
@@ -132,9 +143,8 @@ func UpdateCategory(c *gin.Context) {
 	}
 
 	// Name unique validation
-	if err := initializers.DB.Where("name = ?", userInput.Name).
-		Or("slug = ?", slug.Make(userInput.Name)).
-		First(&models.Category{}).Error; err == nil {
+	if !helpers.IsUniqueValue(initializers.DB, "categories", "name", userInput.Name) ||
+		!helpers.IsUniqueValue(initializers.DB, "categories", "slug", slug.Make(userInput.Name)) {
 		c.JSON(http.StatusConflict, gin.H{
 			"validations": map[string]interface{}{
 				"Name": "The name is already exist!",
@@ -143,10 +153,29 @@ func UpdateCategory(c *gin.Context) {
 
 		return
 	}
+	//if err := initializers.DB.Where("name = ?", userInput.Name).
+	//	Or("slug = ?", slug.Make(userInput.Name)).
+	//	First(&models.Category{}).Error; err == nil {
+	//	c.JSON(http.StatusConflict, gin.H{
+	//		"validations": map[string]interface{}{
+	//			"Name": "The name is already exist!",
+	//		},
+	//	})
+	//
+	//	return
+	//}
 
 	// Find the category by ID
 	var category models.Category
-	initializers.DB.First(&category, id)
+	result := initializers.DB.First(&category, id)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "The record not found",
+		})
+
+		return
+	}
 
 	updateCategory := models.Category{
 		Name: userInput.Name,
