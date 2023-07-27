@@ -25,4 +25,11 @@ func GetRoute(r *gin.Engine) {
 		catRouter.GET("/all-trash", controllers.GetTrashCategories)
 		catRouter.DELETE("/delete-permanent/:id", controllers.DeleteCategoryPermanent)
 	}
+
+	// Post routes
+	postRouter := r.Group("/posts")
+	{
+		postRouter.Use(middleware.RequireAuth)
+		postRouter.POST("/create", controllers.CreatePost)
+	}
 }

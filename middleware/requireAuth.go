@@ -11,6 +11,12 @@ import (
 	"time"
 )
 
+type AuthUser struct {
+	ID    uint   `json:"ID"`
+	Name  string `json:"Name"`
+	Email string `json:"Email"`
+}
+
 func RequireAuth(c *gin.Context) {
 	// Get the cookie from the request
 	tokenString, err := c.Cookie("Authorization")
@@ -53,8 +59,14 @@ func RequireAuth(c *gin.Context) {
 			return
 		}
 
+		authUser := AuthUser{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+		}
+
 		// Attach the user to request
-		c.Set("user", user)
+		c.Set("authUser", authUser)
 
 		// Continue
 		c.Next()
