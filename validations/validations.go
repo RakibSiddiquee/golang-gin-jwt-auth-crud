@@ -1,4 +1,4 @@
-package helpers
+package validations
 
 import (
 	"gorm.io/gorm"
