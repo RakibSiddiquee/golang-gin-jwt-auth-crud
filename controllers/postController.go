@@ -7,6 +7,7 @@ import (
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/validations"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
@@ -55,5 +56,21 @@ func CreatePost(c *gin.Context) {
 	// Return the post
 	c.JSON(http.StatusOK, gin.H{
 		"post": post,
+	})
+}
+
+func GetPosts(c *gin.Context) {
+	// Get all the posts
+	var posts []models.Post
+
+	initializers.DB.Preload("Category", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "name")
+	}).Preload("User", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "name")
+	}).Find(&posts)
+
+	// Return the posts
+	c.JSON(http.StatusOK, gin.H{
+		"posts": posts,
 	})
 }
