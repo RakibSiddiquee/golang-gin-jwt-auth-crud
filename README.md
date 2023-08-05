@@ -1,5 +1,3 @@
-### The project is not completed yet, it is ongoing project...
-
 ## Golang, Gin framework, GORM, Postgres, JWT auth and CRUD Application
 
 ### Used Packages:
