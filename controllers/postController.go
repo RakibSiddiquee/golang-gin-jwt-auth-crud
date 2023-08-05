@@ -188,3 +188,62 @@ func UpdatePost(c *gin.Context) {
 		"post": updatePost,
 	})
 }
+
+func DeletePost(c *gin.Context) {
+	// Get the id from the url
+	id := c.Param("id")
+
+	// Delete the post
+	result := initializers.DB.Delete(&models.Post{}, id)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "The post not found",
+		})
+		return
+	}
+
+	// Return response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "The post has been deleted successfully",
+	})
+}
+
+func GetTrashedPosts(c *gin.Context) {
+	// Get the posts
+	var posts []models.Post
+
+	result := initializers.DB.Unscoped().Find(&posts)
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal server error",
+		})
+		return
+	}
+
+	// Return the posts
+	c.JSON(http.StatusOK, gin.H{
+		"posts": posts,
+	})
+}
+
+func PermanentlyDeletePost(c *gin.Context) {
+	// Get id from url
+	id := c.Param("id")
+
+	// Delete the post
+	result := initializers.DB.Unscoped().Delete(&models.Post{}, id)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "The post not found",
+		})
+		return
+	}
+
+	// Return response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "The post has been deleted permanently",
+	})
+}

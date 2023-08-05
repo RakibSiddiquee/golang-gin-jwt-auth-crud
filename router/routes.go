@@ -34,5 +34,8 @@ func GetRoute(r *gin.Engine) {
 		postRouter.POST("/create", controllers.CreatePost)
 		postRouter.GET(":id", controllers.FindPost)
 		postRouter.PUT("/:id", controllers.UpdatePost)
+		postRouter.DELETE("/:id", controllers.DeletePost)
+		postRouter.GET("/all-trash", controllers.GetTrashedPosts)
+		postRouter.DELETE("/delete-permanent/:id", controllers.PermanentlyDeletePost)
 	}
 }
