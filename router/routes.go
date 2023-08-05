@@ -32,5 +32,7 @@ func GetRoute(r *gin.Engine) {
 		postRouter.Use(middleware.RequireAuth)
 		postRouter.GET("/", controllers.GetPosts)
 		postRouter.POST("/create", controllers.CreatePost)
+		postRouter.GET(":id", controllers.FindPost)
+		postRouter.PUT("/:id", controllers.UpdatePost)
 	}
 }
