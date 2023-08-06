@@ -21,7 +21,7 @@
 9. Test the application in Postman
 
 #### Routes
-1. http://localhost:3000/signup (Signup)
+1. http://localhost:3000/api/signup (Signup)
 ```json
 {
    "name": "John Doe",
@@ -29,32 +29,32 @@
    "password": "123456"
 }
 ```
-2. http://localhost:3000/login (Login)
+2. http://localhost:3000/api/login (Login)
 ```json 
 {
   "email": "john@doe.com",
   "password": "123456"
 }
 ```
-3. http://localhost:3000/logout (Logout)
-4. http://localhost:3000/categories/create (Create category)
+3. http://localhost:3000/api/logout (Logout)
+4. http://localhost:3000/api/categories/create (Create category)
 ```json
 {
   "name": "National"
 }
 ```
-5. http://localhost:3000/categories (Get all category)
-6. http://localhost:3000/categories/1/edit (Edit category)
-7. http://localhost:3000/categories/1/update (Update category)
+5. http://localhost:3000/api/categories (Get all category)
+6. http://localhost:3000/api/categories/1/edit (Edit category)
+7. http://localhost:3000/api/categories/1/update (Update category)
 ```json
 {
   "name": "Sports"
 }
 ```
-8. http://localhost:3000/categories/1/delete (Soft delete a category)
-9. http://localhost:3000/categories/all-trash (Get all trashed category)
-10. http://localhost:3000/categories/delete-permanent/1 (Delete a trashed category permanently)
-11. http://localhost:3000/posts/create (Create post)
+8. http://localhost:3000/api/categories/1/delete (Soft delete a category)
+9. http://localhost:3000/api/categories/all-trash (Get all trashed category)
+10. http://localhost:3000/api/categories/delete-permanent/1 (Delete a trashed category permanently)
+11. http://localhost:3000/api/posts/create (Create post)
 ```json
 {
   "title": "Awesome post",
@@ -62,10 +62,10 @@
   "categoryId": 1
 }
 ```
-12. http://localhost:3000/posts (Get all post)
-13. http://localhost:3000/posts/1/show (Show a single post)
-14. http://localhost:3000/posts/1/edit (Edit post)
-15. http://localhost:3000/posts/1/update (Update post)
+12. http://localhost:3000/api/posts (Get all post)
+13. http://localhost:3000/api/posts/1/show (Show a single post)
+14. http://localhost:3000/api/posts/1/edit (Edit post)
+15. http://localhost:3000/api/posts/1/update (Update post)
 ```json
 {
   "title": "Hello World",
@@ -73,22 +73,22 @@
   "categoryId": 1
 }
 ```
-16. http://localhost:3000/posts/1/delete (Soft delete a post)
-17. http://localhost:3000/posts/all-trash (Get all trashed post)
-18. http://localhost:3000/posts/delete-permanent/1 (Delete a trashed post permanently)
-19. http://localhost:3000/posts/1/comment/store (Comment on a post)
+16. http://localhost:3000/api/posts/1/delete (Soft delete a post)
+17. http://localhost:3000/api/posts/all-trash (Get all trashed post)
+18. http://localhost:3000/api/posts/delete-permanent/1 (Delete a trashed post permanently)
+19. http://localhost:3000/api/posts/1/comment/store (Comment on a post)
 ```json
 {
   "postId": 1,
   "body": "This is a comment"
 }
 ```
-20. http://localhost:3000/posts/1/comment/1/edit (Edit a comment)
-21. http://localhost:3000/posts/1/comment/1/update (Update a comment)
+20. http://localhost:3000/api/posts/1/comment/1/edit (Edit a comment)
+21. http://localhost:3000/api/posts/1/comment/1/update (Update a comment)
 ```json
 {
   "postId": 1,
   "body": "This is a updated comment"
 }
 ```
-22. http://localhost:3000/posts/1/comment/1/delete (Delete a comment)
+22. http://localhost:3000/api/posts/1/comment/1/delete (Delete a comment)

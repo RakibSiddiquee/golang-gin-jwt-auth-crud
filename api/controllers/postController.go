@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	format_errors "github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/format-errors"
-	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/helpers"
-	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/initializers"
-	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/models"
-	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/validations"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/db/initializers"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/internal/format-errors"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/internal/helpers"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/internal/models"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/internal/validations"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"

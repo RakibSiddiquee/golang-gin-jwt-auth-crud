@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/initializers"
-	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/router"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/api/router"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/config"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/db/initializers"
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
-	initializers.LoadEnvVariables()
+	config.LoadEnvVariables()
 	initializers.ConnectDB()
 }
 

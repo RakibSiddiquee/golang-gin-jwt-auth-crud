@@ -1,4 +1,4 @@
-package initializers
+package config
 
 import (
 	"github.com/joho/godotenv"

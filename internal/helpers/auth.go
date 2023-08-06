@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/middleware"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/api/middleware"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
