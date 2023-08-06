@@ -1,14 +1,13 @@
 package controllers
 
 import (
-	"errors"
+	format_errors "github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/format-errors"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/initializers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/models"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/validations"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/gosimple/slug"
-	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -84,7 +83,12 @@ func GetCategories(c *gin.Context) {
 	// Get the categories
 	var categories []models.Category
 
-	initializers.DB.Find(&categories)
+	result := initializers.DB.Find(&categories)
+
+	if result.Error != nil {
+		format_errors.InternalServerError(c)
+		return
+	}
 
 	// Return the categories
 	c.JSON(http.StatusOK, gin.H{
@@ -101,11 +105,8 @@ func FindCategory(c *gin.Context) {
 	var category models.Category
 	result := initializers.DB.First(&category, id)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "The record not found",
-		})
-
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
 		return
 	}
 
@@ -127,7 +128,7 @@ func UpdateCategory(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&userInput); err != nil {
 		if errs, ok := err.(validator.ValidationErrors); ok {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusUnprocessableEntity, gin.H{
 				"validations": validations.FormatValidationErrors(errs),
 			})
 
@@ -168,11 +169,8 @@ func UpdateCategory(c *gin.Context) {
 	var category models.Category
 	result := initializers.DB.First(&category, id)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "The record not found",
-		})
-
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
 		return
 	}
 
@@ -182,7 +180,11 @@ func UpdateCategory(c *gin.Context) {
 	}
 
 	// Update the category record
-	initializers.DB.Model(&category).Updates(updateCategory)
+	result = initializers.DB.Model(&category).Updates(updateCategory)
+	if err := result.Error; err != nil {
+		format_errors.InternalServerError(c)
+		return
+	}
 
 	// Return the category
 	c.JSON(http.StatusOK, gin.H{
@@ -198,11 +200,8 @@ func DeleteCategory(c *gin.Context) {
 	// Delete the post
 	result := initializers.DB.Delete(&models.Category{}, id)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "The category is not found",
-		})
-
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
 		return
 	}
 
@@ -217,7 +216,11 @@ func GetTrashCategories(c *gin.Context) {
 	// Get the categories
 	var categories []models.Category
 
-	initializers.DB.Unscoped().Find(&categories)
+	result := initializers.DB.Unscoped().Find(&categories)
+	if err := result.Error; err != nil {
+		format_errors.InternalServerError(c)
+		return
+	}
 
 	// Return the categories
 	c.JSON(http.StatusOK, gin.H{
@@ -232,11 +235,8 @@ func DeleteCategoryPermanent(c *gin.Context) {
 	// Delete the post
 	result := initializers.DB.Unscoped().Delete(&models.Category{}, id)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "The category is not found",
-		})
-
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
 		return
 	}
 

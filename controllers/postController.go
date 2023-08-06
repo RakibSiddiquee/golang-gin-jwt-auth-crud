@@ -35,6 +35,16 @@ func CreatePost(c *gin.Context) {
 		})
 	}
 
+	if !validations.IsExistValue("categories", "id", userInput.CategoryId) {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"validations": map[string]interface{}{
+				"CategoryId": "The category ID does not exist!",
+			},
+		})
+
+		return
+	}
+
 	// Create a post
 	authID := helpers.GetAuthUser(c).ID
 

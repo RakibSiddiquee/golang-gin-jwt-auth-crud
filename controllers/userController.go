@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	format_errors "github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/format-errors"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/initializers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/models"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/validations"
@@ -24,7 +25,7 @@ func Signup(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&userInput); err != nil {
 		if errs, ok := err.(validator.ValidationErrors); ok {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusUnprocessableEntity, gin.H{
 				"validations": validations.FormatValidationErrors(errs),
 			})
 			return
@@ -33,18 +34,16 @@ func Signup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
 	// Email unique validation
 	if validations.IsUniqueValue("users", "email", userInput.Email) {
-		c.JSON(http.StatusConflict, gin.H{
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"validations": map[string]interface{}{
 				"Email": "The email is already exist!",
 			},
 		})
-
 		return
 	}
 	//if err := initializers.DB.Where("email = ?", userInput.Email).First(&models.User{}).Error; err == nil {
@@ -78,10 +77,7 @@ func Signup(c *gin.Context) {
 	result := initializers.DB.Create(&user)
 
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to create user",
-		})
-
+		format_errors.InternalServerError(c)
 		return
 	}
 
