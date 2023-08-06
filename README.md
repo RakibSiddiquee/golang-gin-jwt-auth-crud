@@ -58,7 +58,7 @@
 ```json
 {
   "title": "Awesome post",
-  "body": "you are the awesome post details",
+  "body": "This is the awesome post details",
   "categoryId": 1
 }
 ```
@@ -69,7 +69,7 @@
 ```json
 {
   "title": "Hello World",
-  "body": "you are the hello world post details",
+  "body": "This is the hello world post details",
   "categoryId": 1
 }
 ```
