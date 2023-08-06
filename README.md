@@ -15,5 +15,5 @@
 3. Rename the .env.example file to .env 
 4. Create a database in postgres 
 5. Change the DNS value in .env file 
-6. Run the command `go run migrate/migrate.go`
+6. Run the command `go run migrate/migrate.go` (Drop existing tables and recreate those)
 7. Check your database, tables should be available

@@ -10,6 +10,8 @@ func GetRoute(r *gin.Engine) {
 	// User routes
 	r.POST("/signup", controllers.Signup)
 	r.POST("/login", controllers.Login)
+
+	r.Use(middleware.RequireAuth)
 	r.POST("/logout", controllers.Logout)
 
 	// Category routes
@@ -19,9 +21,9 @@ func GetRoute(r *gin.Engine) {
 
 		catRouter.GET("/", controllers.GetCategories)
 		catRouter.POST("/create", controllers.CreateCategory)
-		catRouter.GET("/:id", controllers.FindCategory)
-		catRouter.PUT("/:id", controllers.UpdateCategory)
-		catRouter.DELETE("/:id", controllers.DeleteCategory)
+		catRouter.GET("/:id/edit", controllers.EditCategory)
+		catRouter.PUT("/:id/update", controllers.UpdateCategory)
+		catRouter.DELETE("/:id/delete", controllers.DeleteCategory)
 		catRouter.GET("/all-trash", controllers.GetTrashCategories)
 		catRouter.DELETE("/delete-permanent/:id", controllers.DeleteCategoryPermanent)
 	}
@@ -32,10 +34,10 @@ func GetRoute(r *gin.Engine) {
 		postRouter.Use(middleware.RequireAuth)
 		postRouter.GET("/", controllers.GetPosts)
 		postRouter.POST("/create", controllers.CreatePost)
-		postRouter.GET("/show/:id", controllers.ShowPost)
-		postRouter.GET(":id", controllers.EditPost)
-		postRouter.PUT("/:id", controllers.UpdatePost)
-		postRouter.DELETE("/:id", controllers.DeletePost)
+		postRouter.GET("/:id/show", controllers.ShowPost)
+		postRouter.GET(":id/edit", controllers.EditPost)
+		postRouter.PUT("/:id/update", controllers.UpdatePost)
+		postRouter.DELETE("/:id/delete", controllers.DeletePost)
 		postRouter.GET("/all-trash", controllers.GetTrashedPosts)
 		postRouter.DELETE("/delete-permanent/:id", controllers.PermanentlyDeletePost)
 	}
@@ -45,7 +47,8 @@ func GetRoute(r *gin.Engine) {
 	{
 		commentRouter.Use(middleware.RequireAuth)
 		commentRouter.POST("/store", controllers.CommentOnPost)
-		commentRouter.GET("/:comment_id", controllers.EditComment)
-		commentRouter.PUT("/:comment_id", controllers.UpdateComment)
+		commentRouter.GET("/:comment_id/edit", controllers.EditComment)
+		commentRouter.PUT("/:comment_id/update", controllers.UpdateComment)
+		commentRouter.DELETE("/:comment_id/delete", controllers.DeleteComment)
 	}
 }

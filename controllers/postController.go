@@ -228,14 +228,16 @@ func UpdatePost(c *gin.Context) {
 func DeletePost(c *gin.Context) {
 	// Get the id from the url
 	id := c.Param("id")
+	var post models.Post
 
-	// Delete the post
-	result := initializers.DB.Delete(&models.Post{}, id)
-
+	result := initializers.DB.First(&post, id)
 	if err := result.Error; err != nil {
 		format_errors.RecordNotFound(c, err)
 		return
 	}
+
+	// Delete the post
+	initializers.DB.Delete(&post)
 
 	// Return response
 	c.JSON(http.StatusOK, gin.H{

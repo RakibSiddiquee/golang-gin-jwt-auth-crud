@@ -96,8 +96,8 @@ func GetCategories(c *gin.Context) {
 	})
 }
 
-// FindCategory finds the category by ID
-func FindCategory(c *gin.Context) {
+// EditCategory finds the category by ID
+func EditCategory(c *gin.Context) {
 	// Get the id from url
 	id := c.Param("id")
 
@@ -196,14 +196,18 @@ func UpdateCategory(c *gin.Context) {
 func DeleteCategory(c *gin.Context) {
 	// Get the id from request
 	id := c.Param("id")
+	var category models.Category
 
-	// Delete the post
-	result := initializers.DB.Delete(&models.Category{}, id)
+	// Find the category
+	result := initializers.DB.First(&category, id)
 
 	if err := result.Error; err != nil {
 		format_errors.RecordNotFound(c, err)
 		return
 	}
+
+	// Delete the post
+	initializers.DB.Delete(&category)
 
 	// Return the response
 	c.JSON(http.StatusOK, gin.H{

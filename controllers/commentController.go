@@ -140,10 +140,22 @@ func UpdateComment(c *gin.Context) {
 
 func DeleteComment(c *gin.Context) {
 	// Get the id from url
+	id := c.Param("comment_id")
 
 	// Find the comment
+	var comment models.Comment
+	result := initializers.DB.First(&comment, id)
+
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
+		return
+	}
 
 	// Delete the comment
+	initializers.DB.Delete(&comment)
 
 	// Return response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "The comment has been deleted successfully!",
+	})
 }
