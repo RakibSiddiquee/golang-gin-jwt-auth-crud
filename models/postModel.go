@@ -10,5 +10,5 @@ type Post struct {
 	UserID     uint     `gorm:"foreignkey:UserID" json:"userID"`
 	Category   Category `gorm:"foreignkey:CategoryID"`
 	User       User     `gorm:"foreignkey:UserID"`
-	Comment    []Comment
+	Comments   []Comment
 }

@@ -38,7 +38,7 @@ func CreatePost(c *gin.Context) {
 	if !validations.IsExistValue("categories", "id", userInput.CategoryId) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"validations": map[string]interface{}{
-				"CategoryId": "The category ID does not exist!",
+				"CategoryId": "The category does not exist!",
 			},
 		})
 
@@ -118,8 +118,36 @@ func GetPosts(c *gin.Context) {
 	})
 }
 
-// FindPost finds a post by ID
-func FindPost(c *gin.Context) {
+// ShowPost finds a post by ID
+func ShowPost(c *gin.Context) {
+	// Get the id from url
+	id := c.Param("id")
+
+	// Find the post
+	var post models.Post
+	result := initializers.DB.Preload("Category", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, name, slug")
+	}).Preload("User", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, name")
+	}).Preload("Comments", func(db *gorm.DB) *gorm.DB {
+		return db.Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id, name")
+		}).Select("id, post_id, user_id, body, created_at")
+	}).First(&post, id)
+
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
+		return
+	}
+
+	// Return the post
+	c.JSON(http.StatusOK, gin.H{
+		"post": post,
+	})
+}
+
+// EditPost finds a post by ID
+func EditPost(c *gin.Context) {
 	// Get the id from url
 	id := c.Param("id")
 

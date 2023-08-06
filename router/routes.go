@@ -32,10 +32,20 @@ func GetRoute(r *gin.Engine) {
 		postRouter.Use(middleware.RequireAuth)
 		postRouter.GET("/", controllers.GetPosts)
 		postRouter.POST("/create", controllers.CreatePost)
-		postRouter.GET(":id", controllers.FindPost)
+		postRouter.GET("/show/:id", controllers.ShowPost)
+		postRouter.GET(":id", controllers.EditPost)
 		postRouter.PUT("/:id", controllers.UpdatePost)
 		postRouter.DELETE("/:id", controllers.DeletePost)
 		postRouter.GET("/all-trash", controllers.GetTrashedPosts)
 		postRouter.DELETE("/delete-permanent/:id", controllers.PermanentlyDeletePost)
+	}
+
+	// Comment routes
+	commentRouter := r.Group("/posts/:id/comment")
+	{
+		commentRouter.Use(middleware.RequireAuth)
+		commentRouter.POST("/store", controllers.CommentOnPost)
+		commentRouter.GET("/:comment_id", controllers.EditComment)
+		commentRouter.PUT("/:comment_id", controllers.UpdateComment)
 	}
 }
