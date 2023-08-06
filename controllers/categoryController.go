@@ -36,8 +36,8 @@ func CreateCategory(c *gin.Context) {
 	}
 
 	// Name unique validation
-	if !validations.IsUniqueValue(initializers.DB, "categories", "name", userInput.Name) ||
-		!validations.IsUniqueValue(initializers.DB, "categories", "slug", slug.Make(userInput.Name)) {
+	if validations.IsUniqueValue("categories", "name", userInput.Name) ||
+		validations.IsUniqueValue("categories", "slug", slug.Make(userInput.Name)) {
 		c.JSON(http.StatusConflict, gin.H{
 			"validations": map[string]interface{}{
 				"Name": "The name is already exist!",
@@ -142,8 +142,8 @@ func UpdateCategory(c *gin.Context) {
 	}
 
 	// Name unique validation
-	if !validations.IsUniqueValue(initializers.DB, "categories", "name", userInput.Name) ||
-		!validations.IsUniqueValue(initializers.DB, "categories", "slug", slug.Make(userInput.Name)) {
+	if validations.IsUniqueValue("categories", "name", userInput.Name) ||
+		validations.IsUniqueValue("categories", "slug", slug.Make(userInput.Name)) {
 		c.JSON(http.StatusConflict, gin.H{
 			"validations": map[string]interface{}{
 				"Name": "The name is already exist!",

@@ -38,7 +38,7 @@ func Signup(c *gin.Context) {
 	}
 
 	// Email unique validation
-	if !validations.IsUniqueValue(initializers.DB, "users", "email", userInput.Email) {
+	if validations.IsUniqueValue("users", "email", userInput.Email) {
 		c.JSON(http.StatusConflict, gin.H{
 			"validations": map[string]interface{}{
 				"Email": "The email is already exist!",

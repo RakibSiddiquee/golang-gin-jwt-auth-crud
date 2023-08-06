@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"errors"
+	format_errors "github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/format-errors"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/helpers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/initializers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/models"
@@ -48,9 +48,7 @@ func CreatePost(c *gin.Context) {
 	result := initializers.DB.Create(&post)
 
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Cannot create post",
-		})
+		format_errors.InternalServerError(c)
 		return
 	}
 
@@ -78,11 +76,16 @@ func GetPosts(c *gin.Context) {
 	//	}
 	//}
 
-	initializers.DB.Preload("Category", func(db *gorm.DB) *gorm.DB {
+	result := initializers.DB.Preload("Category", func(db *gorm.DB) *gorm.DB {
 		return db.Select("id, name, slug")
 	}).Preload("User", func(db *gorm.DB) *gorm.DB {
 		return db.Select("id, name")
 	}).Find(&posts)
+
+	if result.Error != nil {
+		format_errors.InternalServerError(c)
+		return
+	}
 
 	//var PostResponse []struct {
 	//	ID           uint   `json:"id"`
@@ -114,10 +117,8 @@ func FindPost(c *gin.Context) {
 	var post models.Post
 	result := initializers.DB.First(&post, id)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "The post not found",
-		})
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
 		return
 	}
 
@@ -150,16 +151,15 @@ func UpdatePost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	// Find the post by id
 	var post models.Post
 	result := initializers.DB.First(&post, id)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "The post not found",
-		})
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
 		return
 	}
 
@@ -176,9 +176,7 @@ func UpdatePost(c *gin.Context) {
 	result = initializers.DB.Model(&post).Updates(&updatePost)
 
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal Server Error",
-		})
+		format_errors.InternalServerError(c)
 		return
 	}
 
@@ -196,10 +194,8 @@ func DeletePost(c *gin.Context) {
 	// Delete the post
 	result := initializers.DB.Delete(&models.Post{}, id)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "The post not found",
-		})
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
 		return
 	}
 
@@ -216,9 +212,7 @@ func GetTrashedPosts(c *gin.Context) {
 	result := initializers.DB.Unscoped().Find(&posts)
 
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal server error",
-		})
+		format_errors.InternalServerError(c)
 		return
 	}
 
@@ -231,16 +225,16 @@ func GetTrashedPosts(c *gin.Context) {
 func PermanentlyDeletePost(c *gin.Context) {
 	// Get id from url
 	id := c.Param("id")
+	var post models.Post
 
-	// Delete the post
-	result := initializers.DB.Unscoped().Delete(&models.Post{}, id)
-
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "The post not found",
-		})
+	// Find the post
+	if err := initializers.DB.First(&post, id).Error; err != nil {
+		format_errors.RecordNotFound(c, err)
 		return
 	}
+
+	// Delete the post
+	initializers.DB.Unscoped().Delete(&post)
 
 	// Return response
 	c.JSON(http.StatusOK, gin.H{
