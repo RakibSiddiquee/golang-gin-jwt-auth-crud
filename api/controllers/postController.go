@@ -232,16 +232,28 @@ func GetTrashedPosts(c *gin.Context) {
 	// Get the posts
 	var posts []models.Post
 
-	result := initializers.DB.Unscoped().Find(&posts)
+	//result := initializers.DB.Unscoped().Find(&posts)
+	//
+	//if result.Error != nil {
+	//	format_errors.InternalServerError(c)
+	//	return
+	//}
 
-	if result.Error != nil {
+	pageStr := c.DefaultQuery("page", "1")
+	page, _ := strconv.Atoi(pageStr)
+
+	perPageStr := c.DefaultQuery("perPage", "5")
+	perPage, _ := strconv.Atoi(perPageStr)
+
+	result, err := pagination.Paginate(initializers.DB.Unscoped().Where("deleted_at IS NOT NULL"), page, perPage, nil, &posts)
+	if err != nil {
 		format_errors.InternalServerError(c)
 		return
 	}
 
 	// Return the posts
 	c.JSON(http.StatusOK, gin.H{
-		"posts": posts,
+		"result": result,
 	})
 }
 
@@ -251,7 +263,7 @@ func PermanentlyDeletePost(c *gin.Context) {
 	var post models.Post
 
 	// Find the post
-	if err := initializers.DB.First(&post, id).Error; err != nil {
+	if err := initializers.DB.Unscoped().First(&post, id).Error; err != nil {
 		format_errors.RecordNotFound(c, err)
 		return
 	}

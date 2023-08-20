@@ -16,6 +16,11 @@ func GetRoute(r *gin.Engine) {
 	userRouter := r.Group("/api/users")
 	{
 		userRouter.GET("/", controllers.GetUsers)
+		userRouter.GET("/:id/edit", controllers.EditUser)
+		userRouter.PUT("/:id/update", controllers.UpdateUser)
+		userRouter.DELETE("/:id/delete", controllers.DeleteUser)
+		userRouter.GET("/all-trash", controllers.GetTrashedUsers)
+		userRouter.DELETE("/delete-permanent/:id", controllers.PermanentlyDeleteUser)
 	}
 
 	// Category routes

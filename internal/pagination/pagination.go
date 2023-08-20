@@ -14,12 +14,12 @@ type PaginateResult struct {
 }
 
 // Paginate returns a function that performs pagination on GORM queries
-func Paginate(db *gorm.DB, page, limit int, preloadFunc func(*gorm.DB) *gorm.DB, output interface{}) (PaginateResult, error) {
+func Paginate(db *gorm.DB, page, limit int, rawFunc func(*gorm.DB) *gorm.DB, output interface{}) (PaginateResult, error) {
 	offset := (page - 1) * limit
 
 	query := db
-	if preloadFunc != nil {
-		query = preloadFunc(query)
+	if rawFunc != nil {
+		query = rawFunc(query)
 	}
 
 	var total int64
@@ -47,7 +47,7 @@ func Paginate(db *gorm.DB, page, limit int, preloadFunc func(*gorm.DB) *gorm.DB,
 }
 
 // RawPaginate returns a function that performs pagination on GORM joins, select or raw queries
-func RawPaginate(db *gorm.DB, page, limit int, rawFunc func(*gorm.DB) *gorm.DB, output interface{}) (PaginateResult, error) {
+/*func RawPaginate(db *gorm.DB, page, limit int, rawFunc func(*gorm.DB) *gorm.DB, output interface{}) (PaginateResult, error) {
 	offset := (page - 1) * limit
 
 	query := rawFunc(db)
@@ -75,3 +75,4 @@ func RawPaginate(db *gorm.DB, page, limit int, rawFunc func(*gorm.DB) *gorm.DB, 
 		Total:       total,
 	}, nil
 }
+*/

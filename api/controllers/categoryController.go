@@ -156,9 +156,20 @@ func UpdateCategory(c *gin.Context) {
 		return
 	}
 
+	// Find the category by ID
+	var category models.Category
+	result := initializers.DB.First(&category, id)
+
+	if err := result.Error; err != nil {
+		format_errors.RecordNotFound(c, err)
+		return
+	}
+
 	// Name unique validation
-	if validations.IsUniqueValue("categories", "name", userInput.Name) ||
-		validations.IsUniqueValue("categories", "slug", slug.Make(userInput.Name)) {
+	if (category.Name != userInput.Name &&
+		validations.IsUniqueValue("categories", "name", userInput.Name)) ||
+		(category.Name != userInput.Name &&
+			validations.IsUniqueValue("categories", "slug", slug.Make(userInput.Name))) {
 		c.JSON(http.StatusConflict, gin.H{
 			"validations": map[string]interface{}{
 				"Name": "The name is already exist!",
@@ -167,6 +178,7 @@ func UpdateCategory(c *gin.Context) {
 
 		return
 	}
+
 	//if err := initializers.DB.Where("name = ?", userInput.Name).
 	//	Or("slug = ?", slug.Make(userInput.Name)).
 	//	First(&models.Category{}).Error; err == nil {
@@ -178,15 +190,6 @@ func UpdateCategory(c *gin.Context) {
 	//
 	//	return
 	//}
-
-	// Find the category by ID
-	var category models.Category
-	result := initializers.DB.First(&category, id)
-
-	if err := result.Error; err != nil {
-		format_errors.RecordNotFound(c, err)
-		return
-	}
 
 	updateCategory := models.Category{
 		Name: userInput.Name,
@@ -234,15 +237,27 @@ func GetTrashCategories(c *gin.Context) {
 	// Get the categories
 	var categories []models.Category
 
-	result := initializers.DB.Unscoped().Find(&categories)
-	if err := result.Error; err != nil {
+	pageStr := c.DefaultQuery("page", "1")
+	page, _ := strconv.Atoi(pageStr)
+
+	perPageStr := c.DefaultQuery("perPage", "5")
+	perPage, _ := strconv.Atoi(perPageStr)
+
+	result, err := pagination.Paginate(initializers.DB.Unscoped().Where("deleted_at IS NOT NULL"), page, perPage, nil, &categories)
+	if err != nil {
 		format_errors.InternalServerError(c)
 		return
 	}
 
+	//result := initializers.DB.Unscoped().Where("deleted_at IS NOT NULL").Find(&categories)
+	//if err := result.Error; err != nil {
+	//	format_errors.InternalServerError(c)
+	//	return
+	//}
+
 	// Return the categories
 	c.JSON(http.StatusOK, gin.H{
-		"categories": categories,
+		"result": result,
 	})
 }
 
