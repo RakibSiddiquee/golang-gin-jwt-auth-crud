@@ -75,39 +75,3 @@ func RawPaginate(db *gorm.DB, page, limit int, rawFunc func(*gorm.DB) *gorm.DB, 
 		Total:       total,
 	}, nil
 }
-
-// Paginate returns a function that performs pagination on GORM queries
-/*func Paginate(page, limit int, preloadFunc func(*gorm.DB) *gorm.DB) func(db *gorm.DB, out interface{}) (result PaginateResult, err error) {
-	return func(db *gorm.DB, out interface{}) (result PaginateResult, err error) {
-		offset := (page - 1) * limit
-		query := db
-
-		if preloadFunc != nil {
-			query = preloadFunc(query)
-		}
-
-		// Perform the query for paginated data
-		err = query.Offset(offset).Limit(limit).Find(out).Error
-		if err != nil {
-			return result, err
-		}
-
-		// Get the total count of records
-		query.Model(out).Count(&result.Total)
-
-		result.Data = out
-		result.CurrentPage = page
-		result.From = offset + 1
-
-		to := offset + limit
-		if to > int(result.Total) {
-			to = int(result.Total)
-		}
-		result.To = to
-		result.LastPage = (int(result.Total) + limit - 1) / limit
-		result.PerPage = limit
-
-		return result, nil
-	}
-}
-*/

@@ -99,62 +99,6 @@ func GetPosts(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"response": result,
 	})
-
-	/*var posts []struct {
-		ID       uint   `json:"id"`
-		Title    string `json:"title"`
-		Body     string `json:"body"`
-		Category struct {
-			Name string `json:"name"`
-			Slug string `json:"slug"`
-		}
-		User struct {
-			ID   uint   `json:"id"`
-			Name string `json:"name"`
-		}
-	}*/
-
-	/*result := initializers.DB.Preload("Category", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id, name, slug")
-	}).Preload("User", func(db *gorm.DB) *gorm.DB {
-		return db.Select("id, name")
-	}).Find(&posts)
-
-	if result.Error != nil {
-		format_errors.InternalServerError(c)
-		return
-	}*/
-
-	/*var PostResponse []struct {
-		ID           uint   `json:"id"`
-		Title        string `json:"title"`
-		Body         string `json:"body"`
-		CategoryName string `json:"categoryName"`
-		CategorySlug string `json:"categorySlug"`
-		UserId       uint   `json:"userId"`
-		UserName     string `json:"userName"`
-	}
-
-	rawFunc := func(query *gorm.DB) *gorm.DB {
-		return query.Table("posts").
-			Joins("JOIN categories ON posts.category_id=categories.id").
-			Joins("JOIN users ON posts.user_id=users.id").
-			Select("posts.id, posts.title, posts.body, posts.user_id, categories.name as category_name, categories.slug as category_slug, users.name as user_name")
-
-	}
-
-	//result, err := pagination.Paginate(initializers.DB, page, perPage, preloadFunc, &posts)
-	result, err := pagination.RawPaginate(initializers.DB, page, perPage, rawFunc, &PostResponse)*/
-
-	/*initializers.DB.Table("posts").
-	Joins("JOIN categories ON posts.category_id=categories.id").
-	Joins("JOIN users ON posts.user_id=users.id").
-	Select("posts.id, posts.title, posts.body, posts.user_id, categories.name as category_name, categories.slug as category_slug, users.name as user_name").Find(&PostResponse)*/
-
-	// Return the posts
-	//c.JSON(http.StatusOK, gin.H{
-	//	"posts": posts,
-	//})
 }
 
 // ShowPost finds a post by ID
