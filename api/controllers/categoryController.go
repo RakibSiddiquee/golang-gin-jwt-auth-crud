@@ -4,11 +4,13 @@ import (
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/db/initializers"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/internal/format-errors"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/internal/models"
+	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/internal/pagination"
 	"github.com/RakibSiddiquee/golang-gin-jwt-auth-crud/internal/validations"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/gosimple/slug"
 	"net/http"
+	"strconv"
 )
 
 // CreateCategory creates a new category
@@ -83,16 +85,28 @@ func GetCategories(c *gin.Context) {
 	// Get the categories
 	var categories []models.Category
 
-	result := initializers.DB.Find(&categories)
+	pageStr := c.DefaultQuery("page", "1")
+	page, _ := strconv.Atoi(pageStr)
 
-	if result.Error != nil {
+	perPageStr := c.DefaultQuery("perPage", "5")
+	perPage, _ := strconv.Atoi(perPageStr)
+
+	result, err := pagination.Paginate(initializers.DB, page, perPage, nil, &categories)
+
+	if err != nil {
 		format_errors.InternalServerError(c)
 		return
 	}
 
+	//result := initializers.DB.Find(&categories)
+	//if result.Error != nil {
+	//	format_errors.InternalServerError(c)
+	//	return
+	//}
+
 	// Return the categories
 	c.JSON(http.StatusOK, gin.H{
-		"categories": categories,
+		"response": result,
 	})
 }
 
